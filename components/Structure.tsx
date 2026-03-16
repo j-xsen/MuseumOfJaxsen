@@ -1,5 +1,6 @@
 import { ScrollControls, Scroll } from "@react-three/drei";
 import { useData } from "vike-react/useData";
+import { usePageContext } from "vike-react/usePageContext";
 import Floor from "./Floor";
 import Wall from "./Wall";
 import Artwork from "./Artwork";
@@ -14,7 +15,23 @@ export type PlaneProps = {
 };
 
 function Structure() {
-  const { artworks } = useData<Data>();
+  const pageContext = usePageContext();
+  const data = useData<Data | { artwork?: any }>();
+
+  // Check if we're on the index page (has artworks array)
+  const artworks = "artworks" in data ? data.artworks : [];
+  const isGalleryPage = artworks.length > 0;
+
+  if (!isGalleryPage) {
+    // Simple lighting for detail pages
+    return (
+      <group>
+        <ambientLight intensity={0.8} />
+        <color attach="background" args={["#f5f5f5"]} />
+      </group>
+    );
+  }
+
   const spacing = 3; // Space between artworks
   const wallWidth = artworks.length * spacing + 2;
 
@@ -24,10 +41,10 @@ function Structure() {
       <directionalLight position={[0, 5, 5]} intensity={0.8} castShadow />
       <spotLight position={[0, 3, 2]} intensity={0.5} angle={0.3} penumbra={1} />
 
-      <Wall height={5} width={wallWidth} position={[0, 1, 0]} />
-      <Floor height={6} width={wallWidth} position={[0, -1, 0]} />
+      <Wall height={5} width={wallWidth} position={[-5, 1, 0]} />
+      <Floor height={6} width={wallWidth} position={[-5, -1, 0]} />
 
-      <ScrollControls pages={3} damping={0.2}>
+      <ScrollControls pages={3} damping={0.2} horizontal>
         <Scroll>
           <ArtworkGallery artworks={artworks} spacing={spacing} />
         </Scroll>
