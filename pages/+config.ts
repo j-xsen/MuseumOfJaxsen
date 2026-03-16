@@ -7,9 +7,9 @@ import vikeReact from "vike-react/config";
 
 export default {
   // https://vike.dev/head-tags
-  title: "My Vike App",
+  title: "Museum of Jaxsen",
 
-  description: "Demo showcasing Vike",
+  description: "Museum of art by Jaxsen Honeycutt alongside the opportunity to purchase physical prints.",
   extends: [vikeReact, vikePhoton],
   prerender: true,
 } satisfies Config;

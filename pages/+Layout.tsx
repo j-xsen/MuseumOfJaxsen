@@ -1,74 +1,32 @@
 import "./Layout.css";
 
-import logoUrl from "../assets/logo.svg";
-import { Link } from "../components/Link";
+import { ReactNode } from "react";
+import { Canvas } from "@react-three/fiber";
+import Structure from "../components/Structure";
+import { Fullscreen } from "@react-three/uikit";
 
-export default function Layout({ children }: { children: React.ReactNode }) {
+export default function Layout({ children }: { children: ReactNode }) {
   return (
     <div
       style={{
-        display: "flex",
-        maxWidth: 900,
-        margin: "auto",
+        position: "fixed",
+        top: 0,
+        left: 0,
+        width: "100vw",
+        height: "100vh",
+        zIndex: 0,
       }}
     >
-      <Sidebar>
-        <Logo />
-        <Link href="/">Welcome</Link>
-        <Link href="/todo">Todo</Link>
-        <Link href="/star-wars">Data Fetching</Link>
-      </Sidebar>
-      <Content>{children}</Content>
-    </div>
-  );
-}
-
-function Sidebar({ children }: { children: React.ReactNode }) {
-  return (
-    <div
-      id="sidebar"
-      style={{
-        padding: 20,
-        flexShrink: 0,
-        display: "flex",
-        flexDirection: "column",
-        lineHeight: "1.8em",
-        borderRight: "2px solid #eee",
-      }}
-    >
-      {children}
-    </div>
-  );
-}
-
-function Content({ children }: { children: React.ReactNode }) {
-  return (
-    <div id="page-container">
-      <div
-        id="page-content"
-        style={{
-          padding: 20,
-          paddingBottom: 50,
-          minHeight: "100vh",
-        }}
+      <Canvas
+        gl={{ antialias: true, alpha: false, localClippingEnabled: true }}
+        shadows
+        camera={{ fov: 80, near: 0.1, far: 100, position: [0, 1.5, 3] }}
+        dpr={[1, 2]}
+        style={{ width: "100%", height: "100%" }}
       >
-        {children}
-      </div>
-    </div>
-  );
-}
-
-function Logo() {
-  return (
-    <div
-      style={{
-        marginTop: 20,
-        marginBottom: 10,
-      }}
-    >
-      <a href="/">
-        <img src={logoUrl} height={64} width={64} alt="logo" />
-      </a>
+        <Structure />
+        <Fullscreen>{children}</Fullscreen>
+      </Canvas>
     </div>
   );
 }
