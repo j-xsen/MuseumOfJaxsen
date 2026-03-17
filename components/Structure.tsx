@@ -1,9 +1,11 @@
 import { ScrollControls, Scroll } from "@react-three/drei";
+import { useThree } from "@react-three/fiber";
 import { useData } from "vike-react/useData";
 import { usePageContext } from "vike-react/usePageContext";
 import Floor from "./Floor";
 import Wall from "./Wall";
 import Artwork from "./Artwork";
+import CameraController from "./CameraController";
 import { useMuseumStore } from "../lib/store";
 import { useEffect } from "react";
 import type { Data } from "../pages/index/+data";
@@ -41,15 +43,29 @@ function Structure() {
       <directionalLight position={[0, 5, 5]} intensity={0.8} castShadow />
       <spotLight position={[0, 3, 2]} intensity={0.5} angle={0.3} penumbra={1} />
 
-      <Wall height={5} width={wallWidth} position={[-5, 1, 0]} />
-      <Floor height={6} width={wallWidth} position={[-5, -1, 0]} />
+      <Wall height={5} width={wallWidth} position={[(artworks.length - 1) * spacing / 2, 1, 0]} />
+      <Floor height={6} width={wallWidth} position={[(artworks.length - 1) * spacing / 2, -1, 0]} />
 
-      <ScrollControls pages={3} damping={0.2} horizontal>
-        <Scroll>
-          <ArtworkGallery artworks={artworks} spacing={spacing} />
-        </Scroll>
-      </ScrollControls>
+      <GalleryScrollControls artworks={artworks} spacing={spacing} />
     </group>
+  );
+}
+
+interface GalleryScrollControlsProps {
+  artworks: Data["artworks"];
+  spacing: number;
+}
+
+function GalleryScrollControls({ artworks, spacing }: GalleryScrollControlsProps) {
+  const { viewport } = useThree();
+  const pages = 1 + ((artworks.length - 1) * spacing) / viewport.width;
+  return (
+    <ScrollControls pages={pages} damping={0.2} horizontal>
+      <CameraController artworks={artworks} spacing={spacing} />
+      <Scroll>
+        <ArtworkGallery artworks={artworks} spacing={spacing} />
+      </Scroll>
+    </ScrollControls>
   );
 }
 
@@ -71,7 +87,7 @@ function ArtworkGallery({ artworks, spacing }: ArtworkGalleryProps) {
   return (
     <group>
       {artworks.map((artwork, index) => {
-        const xPosition = (index - (artworks.length - 1) / 2) * spacing;
+        const xPosition = index * spacing;
         return (
           <Artwork
             key={artwork.id}
