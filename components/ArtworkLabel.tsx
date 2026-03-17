@@ -1,7 +1,7 @@
 import { Suspense, useRef } from "react";
-import { useFrame } from "@react-three/fiber";
+import { useFrame, useThree } from "@react-three/fiber";
 import { Text3D } from "@react-three/drei";
-import { type Mesh, Group, MeshStandardMaterial } from "three";
+import { type Mesh, Group, MeshStandardMaterial, Euler, Quaternion } from "three";
 import { useMuseumStore } from "../lib/store";
 
 const FONT_URL = "/fonts/helvetiker_regular.typeface.json";
@@ -60,7 +60,7 @@ function LabelMesh({ title, artworkId }: { title: string; artworkId: string }) {
   return (
     <Text3D ref={meshRef} font={FONT_URL} size={FONT_SIZE} height={0.04}>
       {wrapTitle(title, MAX_CHARS_PER_LINE)}
-      <meshStandardMaterial ref={matRef} color="white" transparent opacity={0} />
+      <meshStandardMaterial ref={matRef} color="black" transparent opacity={0} />
     </Text3D>
   );
 }
@@ -71,15 +71,20 @@ interface ArtworkLabelProps {
   x: number;
 }
 
+const pitchDown = new Quaternion().setFromEuler(new Euler(0.175, 0, 0));
+
 export default function ArtworkLabel({ title, artworkId, x }: ArtworkLabelProps) {
   const groupRef = useRef<Group>(null);
   const activeArtworkId = useMuseumStore((state) => state.activeArtworkId);
+  const { camera } = useThree();
 
   useFrame(() => {
     if (!groupRef.current) return;
     const isActive = activeArtworkId === artworkId;
     const targetY = isActive ? LABEL_Y_ACTIVE : LABEL_Y_INACTIVE;
     groupRef.current.position.y += (targetY - groupRef.current.position.y) * 0.08;
+    // Billboard facing camera, then pitch down slightly so text reads flat
+    groupRef.current.quaternion.copy(camera.quaternion).multiply(pitchDown);
   });
 
   return (
