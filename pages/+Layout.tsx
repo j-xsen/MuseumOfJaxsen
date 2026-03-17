@@ -4,6 +4,7 @@ import { ReactNode } from "react";
 import { Canvas } from "@react-three/fiber";
 import Structure from "../components/Structure";
 import { Fullscreen } from "@react-three/uikit";
+import ArtworkDetailOverlay from "../components/ArtworkDetailOverlay";
 
 export default function Layout({ children }: { children: ReactNode }) {
   return (
@@ -27,6 +28,9 @@ export default function Layout({ children }: { children: ReactNode }) {
         <Structure />
         <Fullscreen>{children}</Fullscreen>
       </Canvas>
+      <div style={{ position: "absolute", inset: 0, pointerEvents: "none", zIndex: 1 }}>
+        <ArtworkDetailOverlay />
+      </div>
     </div>
   );
 }
