@@ -1,13 +1,14 @@
-import { useEffect, useRef } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import { useData } from "vike-react/useData";
 import Floor from "./Floor";
 import Wall from "./Wall";
 import Artwork from "./Artwork";
 import ArtworkLabel from "./ArtworkLabel";
+import CameraAnimator from "./CameraAnimator";
+import BackRoom from "./BackRoom";
 import { useMuseumStore } from "../lib/store";
 import type { Data } from "../pages/index/+data";
-import type * as THREE from "three";
 import { Group } from "three";
 
 export type PlaneProps = {
@@ -40,7 +41,7 @@ function Structure() {
       <ambientLight intensity={0.3} />
 
       {/* Soft fill from above — no shadow, just keeps darks from being black */}
-      <directionalLight position={[0, 10, 4]} intensity={0.5} />
+      <directionalLight position={[0, 10, 4]} intensity={0.25} />
 
       {/* Track lights: three ceiling spots spaced across the gallery */}
       {([-3, 0, 3] as number[]).map((x) => (
@@ -48,7 +49,7 @@ function Structure() {
           key={x}
           position={[x, 7.5, 2.5]}
           target-position={[x, 0, 0]}
-          intensity={50}
+          intensity={28}
           angle={0.35}
           penumbra={0.6}
           distance={14}
@@ -59,8 +60,13 @@ function Structure() {
         />
       ))}
 
-      <Wall height={9} width={wallWidth} position={[0, 1, 0]} />
-      <Floor height={6} width={wallWidth} position={[0, -1, 0]} />
+      <Suspense fallback={null}>
+        <Wall height={9} width={wallWidth} position={[0, 1, 0]} />
+        <Floor height={6} width={wallWidth} position={[0, -1, 0]} />
+      </Suspense>
+
+      <CameraAnimator />
+      <LazyBackRoom artworks={artworks} wallWidth={wallWidth} />
 
       <GalleryController artworks={artworks} spacing={spacing}>
         {artworks.map((artwork, index) => (
@@ -78,6 +84,19 @@ function Structure() {
   );
 }
 
+// Only mount BackRoom once the user has triggered the back-wall view — keeps initial load fast
+function LazyBackRoom({ artworks, wallWidth }: { artworks: Data["artworks"]; wallWidth: number }) {
+  const isBackWallView = useMuseumStore((s) => s.isBackWallView);
+  const [everActivated, setEverActivated] = useState(false);
+
+  useEffect(() => {
+    if (isBackWallView && !everActivated) setEverActivated(true);
+  }, [isBackWallView, everActivated]);
+
+  if (!everActivated) return null;
+  return <BackRoom artworks={artworks} wallWidth={wallWidth} />;
+}
+
 interface GalleryControllerProps {
   artworks: Data["artworks"];
   spacing: number;
@@ -89,22 +108,19 @@ function GalleryController({ artworks, spacing, children }: GalleryControllerPro
   const groupRef = useRef<Group>(null);
   const setActiveArtworkId = useMuseumStore((state) => state.setActiveArtworkId);
   const activeIdRef = useRef<string | null>(null);
+  const isBackWallView = useMuseumStore((s) => s.isBackWallView);
+  const isBackRef = useRef(isBackWallView);
+
+  useEffect(() => { isBackRef.current = isBackWallView; }, [isBackWallView]);
 
   // Scroll state — all mutable, never trigger re-renders
   const targetIndex = useRef(0);
-  const rawAccum = useRef(0);   // accumulated raw input in px
-  const displayX = useRef(0);   // current smoothed group X
+  const rawAccum = useRef(0);
+  const displayX = useRef(0);
   const lastScrollTime = useRef(0);
 
-  // px of input to commit to next artwork; visual drag maxes out before this
   const COMMIT_THRESHOLD = 100;
   const MAX_VISUAL_DRAG = spacing * 0.3;
-
-  const { camera } = useThree();
-
-  useEffect(() => {
-    camera.lookAt(0, 1.5, 0);
-  }, [camera]);
 
   useEffect(() => {
     if (artworks.length > 0) {
@@ -117,19 +133,22 @@ function GalleryController({ artworks, spacing, children }: GalleryControllerPro
     const el = gl.domElement;
 
     const onWheel = (e: WheelEvent) => {
+      if (isBackRef.current) return;
       e.preventDefault();
       let delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
-      if (e.deltaMode === 1) delta *= 24;   // line mode → px
-      if (e.deltaMode === 2) delta *= 400;  // page mode → px
+      if (e.deltaMode === 1) delta *= 24;
+      if (e.deltaMode === 2) delta *= 400;
       rawAccum.current += delta;
       lastScrollTime.current = Date.now();
     };
 
     let lastTouchX = 0;
     const onTouchStart = (e: TouchEvent) => {
+      if (isBackRef.current) return;
       lastTouchX = e.touches[0].clientX;
     };
     const onTouchMove = (e: TouchEvent) => {
+      if (isBackRef.current) return;
       const dx = lastTouchX - e.touches[0].clientX;
       lastTouchX = e.touches[0].clientX;
       rawAccum.current += dx * 2;
@@ -153,30 +172,25 @@ function GalleryController({ artworks, spacing, children }: GalleryControllerPro
     const isScrolling = timeSince < 150;
 
     if (isScrolling) {
-      // Commit to next/prev artwork when input crosses threshold
       if (Math.abs(rawAccum.current) > COMMIT_THRESHOLD) {
         const dir = Math.sign(rawAccum.current);
         targetIndex.current = Math.max(0, Math.min(n - 1, targetIndex.current + dir));
         rawAccum.current = 0;
       }
     } else {
-      // Input stopped — spring rawAccum back to 0
       rawAccum.current *= 0.78;
       if (Math.abs(rawAccum.current) < 0.5) rawAccum.current = 0;
     }
 
-    // tanh gives exponential feel: small input → tiny nudge, large input → saturates
     const visualOffset = -Math.tanh(rawAccum.current / COMMIT_THRESHOLD) * MAX_VISUAL_DRAG;
     const targetX = -(targetIndex.current * spacing) + visualOffset;
 
-    // Spring the group toward target
     displayX.current += (targetX - displayX.current) * 0.12;
 
     if (groupRef.current) {
       groupRef.current.position.x = displayX.current;
     }
 
-    // Update active artwork to whichever is closest to screen center (x=0)
     let closestIndex = 0;
     let closestDist = Infinity;
     artworks.forEach((_, i) => {

@@ -54,13 +54,14 @@ function LabelMesh({ title, artworkId }: { title: string; artworkId: string }) {
     if (matRef.current) {
       const target = activeArtworkId === artworkId ? 1 : 0;
       matRef.current.opacity += (target - matRef.current.opacity) * 0.08;
+      matRef.current.emissiveIntensity += (target * 0.7 - matRef.current.emissiveIntensity) * 0.08;
     }
   });
 
   return (
     <Text3D ref={meshRef} font={FONT_URL} size={FONT_SIZE} height={0.04}>
       {wrapTitle(title, MAX_CHARS_PER_LINE)}
-      <meshStandardMaterial ref={matRef} color="black" transparent opacity={0} />
+      <meshStandardMaterial ref={matRef} color="white" emissive="white" emissiveIntensity={0} transparent opacity={0} />
     </Text3D>
   );
 }

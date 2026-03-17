@@ -45,19 +45,22 @@ export default function Artwork({ artwork, position, index }: ArtworkProps) {
       onPointerOver={() => setHovered(true)}
       onPointerOut={() => setHovered(false)}
     >
-      {/* Box gives the frame real depth so it casts a visible drop shadow on the wall */}
       <boxGeometry args={[width, height, 0.15]} />
       <meshStandardMaterial
         color={isActive ? "#fff" : "#aaa"}
         metalness={0.1}
         roughness={0.8}
+        emissive={isActive ? "#fff8e8" : "#221f1c"}
+        emissiveIntensity={isActive ? 0.35 : 0.08}
       />
-      {/* Image sits flush on the front face (z = depth/2 + tiny offset) */}
       <mesh position={[0, 0, 0.08]} castShadow>
         <planeGeometry args={[width * 0.9, height * 0.9]} />
-        {/* roughness=1 metalness=0 keeps the painting surface matte — prevents light wash-out */}
         <meshStandardMaterial map={texture} roughness={1} metalness={0} />
       </mesh>
+      {/* Soft warm light emanating from the active frame */}
+      {isActive && (
+        <pointLight position={[0, 0, 0.6]} intensity={1.2} distance={4} decay={2} color="#fff4d0" />
+      )}
     </mesh>
   );
 }
