@@ -5,6 +5,7 @@ import { usePageContext } from "vike-react/usePageContext";
 import Floor from "./Floor";
 import Wall from "./Wall";
 import Artwork from "./Artwork";
+import ArtworkLabel from "./ArtworkLabel";
 import CameraController from "./CameraController";
 import { useMuseumStore } from "../lib/store";
 import { useEffect } from "react";
@@ -43,8 +44,8 @@ function Structure() {
       <directionalLight position={[0, 5, 5]} intensity={1.5} castShadow />
       <spotLight position={[0, 3, 2]} intensity={0.5} angle={0.3} penumbra={1} />
 
-      <Wall height={5} width={wallWidth} position={[(artworks.length - 1) * spacing / 2, 1, 0]} />
-      <Floor height={6} width={wallWidth} position={[(artworks.length - 1) * spacing / 2, -1, 0]} />
+      <Wall height={9} width={wallWidth} position={[0, 1, 0]} />
+      <Floor height={6} width={wallWidth} position={[0, -1, 0]} />
 
       <GalleryScrollControls artworks={artworks} spacing={spacing} />
     </group>
@@ -89,12 +90,14 @@ function ArtworkGallery({ artworks, spacing }: ArtworkGalleryProps) {
       {artworks.map((artwork, index) => {
         const xPosition = index * spacing;
         return (
-          <Artwork
-            key={artwork.id}
-            artwork={artwork}
-            position={[xPosition, 1.5, 0.1]}
-            index={index}
-          />
+          <group key={artwork.id}>
+            <Artwork
+              artwork={artwork}
+              position={[xPosition, 1.5, 0.1]}
+              index={index}
+            />
+            <ArtworkLabel title={artwork.title} artworkId={artwork.id} x={xPosition} />
+          </group>
         );
       })}
     </group>
