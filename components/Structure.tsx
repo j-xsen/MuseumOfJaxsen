@@ -6,6 +6,7 @@ import Floor from "./Floor";
 import Wall from "./Wall";
 import Artwork from "./Artwork";
 import ArtworkLabel from "./ArtworkLabel";
+import ArtworkInfo from "./ArtworkInfo";
 import CameraController from "./CameraController";
 import { useMuseumStore } from "../lib/store";
 import { useEffect } from "react";
@@ -97,6 +98,7 @@ function ArtworkGallery({ artworks, spacing }: ArtworkGalleryProps) {
               index={index}
             />
             <ArtworkLabel title={artwork.title} artworkId={artwork.id} x={xPosition} />
+            <ArtworkInfo year={artwork.year} medium={artwork.medium} artworkId={artwork.id} x={xPosition} />
           </group>
         );
       })}
