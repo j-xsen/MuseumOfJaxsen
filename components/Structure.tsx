@@ -36,9 +36,28 @@ function Structure() {
 
   return (
     <group>
-      <ambientLight intensity={1} />
-      <directionalLight position={[0, 5, 5]} intensity={1.5} castShadow />
-      <spotLight position={[0, 3, 2]} intensity={0.5} angle={0.3} penumbra={1} />
+      {/* Low ambient so track lights and shadows read clearly */}
+      <ambientLight intensity={0.3} />
+
+      {/* Soft fill from above — no shadow, just keeps darks from being black */}
+      <directionalLight position={[0, 10, 4]} intensity={0.5} />
+
+      {/* Track lights: three ceiling spots spaced across the gallery */}
+      {([-3, 0, 3] as number[]).map((x) => (
+        <spotLight
+          key={x}
+          position={[x, 7.5, 2.5]}
+          target-position={[x, 0, 0]}
+          intensity={50}
+          angle={0.35}
+          penumbra={0.6}
+          distance={14}
+          decay={2}
+          castShadow
+          shadow-mapSize={[1024, 1024]}
+          shadow-bias={-0.001}
+        />
+      ))}
 
       <Wall height={9} width={wallWidth} position={[0, 1, 0]} />
       <Floor height={6} width={wallWidth} position={[0, -1, 0]} />
