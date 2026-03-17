@@ -39,8 +39,8 @@ function Structure() {
 
   return (
     <group>
-      <ambientLight intensity={0.5} />
-      <directionalLight position={[0, 5, 5]} intensity={0.8} castShadow />
+      <ambientLight intensity={1} />
+      <directionalLight position={[0, 5, 5]} intensity={1.5} castShadow />
       <spotLight position={[0, 3, 2]} intensity={0.5} angle={0.3} penumbra={1} />
 
       <Wall height={5} width={wallWidth} position={[(artworks.length - 1) * spacing / 2, 1, 0]} />

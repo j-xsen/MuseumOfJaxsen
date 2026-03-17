@@ -22,7 +22,7 @@ export default function Artwork({ artwork, position, index }: ArtworkProps) {
 
   // Scale artwork based on real dimensions (normalized)
   const aspectRatio = artwork.dimensions.height / artwork.dimensions.width;
-  const height = 1.5;
+  const height = 2;
   const width = height * aspectRatio;
 
   useFrame(() => {
