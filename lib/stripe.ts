@@ -17,7 +17,10 @@ export async function createCheckoutSession(artwork: Artwork) {
     });
 
     if (!response.ok) {
-      throw new Error("Failed to create checkout session");
+      // throw new Error("Failed to create checkout session");
+      console.error("Failed to create checkout session");
+      alert("Unable to process checkout. Please try again.");
+      return;
     }
 
     const { url } = await response.json();

@@ -3,6 +3,7 @@ import { useFrame } from "@react-three/fiber";
 import { useMuseumStore } from "../lib/store";
 import type { Artwork as ArtworkType } from "../lib/artworks";
 import { Vector3, type Mesh } from "three";
+import { useTexture } from "@react-three/drei";
 
 interface ArtworkProps {
   artwork: ArtworkType;
@@ -15,11 +16,12 @@ export default function Artwork({ artwork, position, index }: ArtworkProps) {
   const [hovered, setHovered] = useState(false);
   const activeArtworkId = useMuseumStore((state) => state.activeArtworkId);
   const openArtworkDetail = useMuseumStore((state) => state.openArtworkDetail);
+  const texture = useTexture(artwork.imageUrl);
 
   const isActive = activeArtworkId === artwork.id;
 
   // Scale artwork based on real dimensions (normalized)
-  const aspectRatio = artwork.dimensions.width / artwork.dimensions.height;
+  const aspectRatio = artwork.dimensions.height / artwork.dimensions.width;
   const height = 1.5;
   const width = height * aspectRatio;
 
@@ -43,14 +45,14 @@ export default function Artwork({ artwork, position, index }: ArtworkProps) {
     >
       <planeGeometry args={[width, height]} />
       <meshStandardMaterial
-        color={isActive ? "#ffffff" : "#eeeeee"}
+        color={isActive ? "#fff" : "#aaa"}
         metalness={0.1}
         roughness={0.8}
       />
       {/* Placeholder until image texture is loaded */}
       <mesh position={[0, 0, 0.01]}>
         <planeGeometry args={[width * 0.9, height * 0.9]} />
-        <meshStandardMaterial color="#888888" />
+        <meshStandardMaterial map={texture} />
       </mesh>
     </mesh>
   );
