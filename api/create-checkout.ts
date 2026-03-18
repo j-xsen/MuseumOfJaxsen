@@ -52,6 +52,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       shipping_address_collection: {
         allowed_countries: ["US", "CA", "GB", "AU"],
       },
+      shipping_options: [
+        { shipping_rate: process.env.STRIPE_SHIPPING_RATE_US! },
+        { shipping_rate: process.env.STRIPE_SHIPPING_RATE_INTL! },
+      ],
     });
 
     return res.status(200).json({ url: session.url });

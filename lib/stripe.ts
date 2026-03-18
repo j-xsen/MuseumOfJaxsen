@@ -2,7 +2,8 @@ import type { Artwork } from "./contentful";
 
 export async function createCheckoutSession(artwork: Artwork) {
   try {
-    const response = await fetch("/api/create-checkout", {
+    const apiBase = import.meta.env.DEV ? "http://localhost:3001" : "";
+    const response = await fetch(`${apiBase}/api/create-checkout`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

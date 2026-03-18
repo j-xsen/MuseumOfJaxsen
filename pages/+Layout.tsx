@@ -5,8 +5,15 @@ import { Canvas } from "@react-three/fiber";
 import Structure from "../components/Structure";
 import { Fullscreen } from "@react-three/uikit";
 import ArtworkDetailOverlay from "../components/ArtworkDetailOverlay";
+import { usePageContext } from "vike-react/usePageContext";
 
 export default function Layout({ children }: { children: ReactNode }) {
+  const { urlPathname } = usePageContext();
+
+  if (urlPathname.startsWith("/purchase/success")) {
+    return <>{children}</>;
+  }
+
   return (
     <div
       style={{
