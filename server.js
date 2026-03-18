@@ -3,6 +3,7 @@ import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 import checkoutHandler from './api/create-checkout.ts'
+import shipOrderHandler from './api/ship-order.ts'
 
 const app = express();
 
@@ -13,6 +14,14 @@ app.use(express.json());
 app.post('/api/create-checkout', async (req, res) => {
     try {
         await checkoutHandler(req, res);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.post('/api/ship-order', async (req, res) => {
+    try {
+        await shipOrderHandler(req, res);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

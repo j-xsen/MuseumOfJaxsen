@@ -10,7 +10,7 @@ import { usePageContext } from "vike-react/usePageContext";
 export default function Layout({ children }: { children: ReactNode }) {
   const { urlPathname } = usePageContext();
 
-  if (urlPathname.startsWith("/purchase/success")) {
+  if (urlPathname.startsWith("/purchase/success") || urlPathname.startsWith("/admin")) {
     return <>{children}</>;
   }
 
