@@ -12,7 +12,7 @@ const BTN_BASE: React.CSSProperties = {
 
 export default function ArtworkDetailOverlay() {
   const data = useData<Data | { artwork?: unknown }>();
-  const artworks = "artworks" in data ? data.artworks : [];
+  const artworks = data != undefined ? "artworks" in data ? data.artworks : [] : null;
 
   const activeArtworkId = useMuseumStore((state) => state.activeArtworkId);
   const isBackWallView = useMuseumStore((s) => s.isBackWallView);
@@ -58,7 +58,7 @@ export default function ArtworkDetailOverlay() {
     );
   }
 
-  if (!activeArtworkId || artworks.length === 0) return null;
+  if (!activeArtworkId || artworks == null || artworks.length === 0) return null;
   const artwork = artworks.find((a) => a.id === activeArtworkId);
   if (!artwork) return null;
 
