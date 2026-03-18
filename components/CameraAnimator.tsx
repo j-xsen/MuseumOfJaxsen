@@ -67,9 +67,11 @@ export default function CameraAnimator() {
     window.addEventListener("mouseup", () => { if (isBackRef.current) el.style.cursor = "grab"; });
   }, [gl]);
 
-  useFrame(() => {
+  useFrame((_, delta) => {
+    const dt = Math.min(delta, 0.05);
     const targetTheta = isBackRef.current ? 0 : Math.PI;
-    theta.current += (targetTheta - theta.current) * 0.06;
+    // Frame-rate independent lerp (≈0.06 per frame at 60 fps)
+    theta.current += (targetTheta - theta.current) * (1 - Math.pow(0.94, dt * 60));
 
     // How far into detail view (0 = gallery, 1 = back wall)
     const detailProgress = 1 - theta.current / Math.PI;

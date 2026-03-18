@@ -4,7 +4,7 @@ import { RepeatWrapping } from "three";
 import type { PlaneProps } from "./Structure";
 
 export default function Floor(props: PlaneProps) {
-  const texture = useKTX2("/textures/floor.ktx2", "/basis/");
+  const texture = useKTX2("/textures/floor.ktx2");
 
   useMemo(() => {
     texture.wrapS = texture.wrapT = RepeatWrapping;

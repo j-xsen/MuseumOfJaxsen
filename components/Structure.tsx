@@ -166,16 +166,21 @@ function GalleryController({ artworks, spacing, children }: GalleryControllerPro
     };
   }, [gl]);
 
-  useFrame(() => {
+  useFrame((_, delta) => {
+    const dt = Math.min(delta, 0.05);
     const n = artworks.length;
     const timeSince = Date.now() - lastScrollTime.current;
-    const isScrolling = timeSince < 150;
+    const isScrolling = timeSince < 200;
 
     if (isScrolling) {
-      if (Math.abs(rawAccum.current) > COMMIT_THRESHOLD) {
+      // Drain the accumulator one step at a time, carrying the remainder so
+      // visualOffset transitions smoothly instead of snapping to zero on commit.
+      while (Math.abs(rawAccum.current) > COMMIT_THRESHOLD) {
         const dir = Math.sign(rawAccum.current);
-        targetIndex.current = Math.max(0, Math.min(n - 1, targetIndex.current + dir));
-        rawAccum.current = 0;
+        const next = targetIndex.current + dir;
+        if (next < 0 || next >= n) { rawAccum.current = 0; break; }
+        targetIndex.current = next;
+        rawAccum.current -= dir * COMMIT_THRESHOLD;
       }
     } else {
       rawAccum.current *= 0.78;
@@ -185,7 +190,8 @@ function GalleryController({ artworks, spacing, children }: GalleryControllerPro
     const visualOffset = -Math.tanh(rawAccum.current / COMMIT_THRESHOLD) * MAX_VISUAL_DRAG;
     const targetX = -(targetIndex.current * spacing) + visualOffset;
 
-    displayX.current += (targetX - displayX.current) * 0.12;
+    // Frame-rate independent lerp (≈0.2 per frame at 60 fps)
+    displayX.current += (targetX - displayX.current) * (1 - Math.pow(0.8, dt * 60));
 
     if (groupRef.current) {
       groupRef.current.position.x = displayX.current;
