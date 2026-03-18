@@ -27,8 +27,9 @@ export interface Artwork {
   artist: string;
   year: number;
   description: string;
-  imageUrl: string;
-  imageUrlHiRez?: string;
+  imageUrl: string;       // sized front-wall texture (w=1600)
+  imageUrlHiRez?: string; // full-res back-wall texture (separate hiRez asset)
+  imageUrlFullRes: string; // raw lowRez asset, no params — back-wall fallback when hiRez absent
   price: number;
   dimensions: {
     width: number;
@@ -59,7 +60,12 @@ export function transformArtwork(entry: Entry<ContentfulArtworkSkeleton>): Artwo
   // Get image URLs
   const lowRezAsset = fields.lowRez as Asset;
   const hiRezAsset = fields.hiRez as Asset | undefined;
-  const imageUrl = lowRezAsset?.fields?.file?.url ? `https:${lowRezAsset.fields.file.url}` : "";
+  // Cap front-wall textures via Contentful's Image API — without params the CDN
+  // serves the original uploaded file at full resolution, which is expensive for
+  // a small 3-D plane. 1600px covers retina at the largest rendered size.
+  const rawImageUrl = lowRezAsset?.fields?.file?.url ? `https:${lowRezAsset.fields.file.url}` : "";
+  const imageUrl = rawImageUrl ? `${rawImageUrl}?w=1600&q=85` : "";
+  // Hi-rez keeps no params — it should load at full quality for the back-wall detail view.
   const imageUrlHiRez = hiRezAsset?.fields?.file?.url ? `https:${hiRezAsset.fields.file.url}` : undefined;
 
   // Calculate dimensions from ratio
@@ -81,6 +87,7 @@ export function transformArtwork(entry: Entry<ContentfulArtworkSkeleton>): Artwo
     description: fields.description as string || `${fields.title} - Created ${year}. Medium: ${fields.media || "Mixed Media"}`,
     imageUrl,
     imageUrlHiRez,
+    imageUrlFullRes: rawImageUrl,
     price: fields.price as number || 20, // Default price
     dimensions: {
       width: Math.round(width),

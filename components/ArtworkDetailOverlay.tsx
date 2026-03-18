@@ -69,28 +69,27 @@ export default function ArtworkDetailOverlay() {
         bottom: 24,
         left: "50%",
         transform: "translateX(-50%)",
-        width: "80vw",
-        maxWidth: 320,
+        width: "min(80vw, 320px)",
         pointerEvents: "auto",
         backgroundColor: "#faf8f3",
         border: "1px solid #d4cfc7",
         borderRadius: 2,
-        padding: "28px 24px 24px",
+        padding: "clamp(14px, 4vw, 28px) clamp(12px, 3.5vw, 24px)",
         fontFamily: "system-ui, -apple-system, Georgia, serif",
         boxSizing: "border-box",
       }}
     >
-      <div style={{ fontSize: 20, fontWeight: "bold", color: "#1a1814", lineHeight: 1.2 }}>
+      <div style={{ fontSize: "clamp(15px, 4.5vw, 20px)", fontWeight: "bold", color: "#1a1814", lineHeight: 1.2 }}>
         {artwork.title}
       </div>
 
-      <div style={{ marginTop: 8, fontSize: 16, color: "#5a5650" }}>
+      <div style={{ marginTop: 8, fontSize: "clamp(13px, 3.5vw, 16px)", color: "#5a5650" }}>
         {artwork.artist}
       </div>
 
       <div style={{ marginTop: 20, marginBottom: 20, height: 1, backgroundColor: "#d4cfc7" }} />
 
-      <div style={{ fontSize: 15, color: "#7a7670" }}>
+      <div style={{ fontSize: "clamp(12px, 3vw, 15px)", color: "#7a7670" }}>
         {`${artwork.year} · ${artwork.medium}`}
       </div>
 
@@ -100,10 +99,10 @@ export default function ArtworkDetailOverlay() {
           style={{
             ...BTN_BASE,
             flex: 1,
-            padding: "14px 8px",
+            padding: "clamp(9px, 2.5vw, 14px) 8px",
             border: `1px solid ${artwork.available ? "#1a1814" : "#c0bbb5"}`,
             borderRadius: 2,
-            fontSize: 15,
+            fontSize: "clamp(12px, 3vw, 15px)",
             fontWeight: "bold",
             color: artwork.available ? "#1a1814" : "#c0bbb5",
             cursor: artwork.available ? "pointer" : "default",
@@ -116,10 +115,10 @@ export default function ArtworkDetailOverlay() {
           onClick={() => setIsBackWallView(true)}
           style={{
             ...BTN_BASE,
-            padding: "14px 16px",
+            padding: "clamp(9px, 2.5vw, 14px) clamp(10px, 2.5vw, 16px)",
             border: "1px solid #d4cfc7",
             borderRadius: 2,
-            fontSize: 15,
+            fontSize: "clamp(12px, 3vw, 15px)",
             color: "#7a7670",
           }}
         >

@@ -10,7 +10,17 @@ interface BackRoomProps {
 }
 
 function BackWallArtwork({ artwork }: { artwork: Data["artworks"][number] }) {
-  const rawTexture = useTexture(artwork.imageUrlHiRez ?? artwork.imageUrl);
+  // Use hiRez if available; fall back to the raw (unparameterized) full-res URL,
+  // NOT imageUrl which is capped at w=1600 for front-wall display.
+  const rawTexture = useTexture(artwork.imageUrlHiRez ?? artwork.imageUrlFullRes);
+  const setIsBackRoomReady = useMuseumStore((s) => s.setIsBackRoomReady);
+
+  // This component only renders when isBackWallView is true (gated in BackRoom).
+  // It only mounts after useTexture resolves, so mounting = texture ready.
+  useEffect(() => {
+    setIsBackRoomReady(true);
+    return () => setIsBackRoomReady(false);
+  }, [setIsBackRoomReady]);
 
   // Viewing the back face of a plane horizontally mirrors the UVs.
   // Clone and flip U to compensate.
@@ -101,6 +111,7 @@ function BackWallSurfaces({ wallWidth }: { wallWidth: number }) {
 
 export default function BackRoom({ artworks, wallWidth }: BackRoomProps) {
   const activeArtworkId = useMuseumStore((s) => s.activeArtworkId);
+  const isBackRoomVisible = useMuseumStore((s) => s.isBackRoomVisible);
   const artwork = artworks.find((a) => a.id === activeArtworkId);
 
   return (
@@ -125,7 +136,8 @@ export default function BackRoom({ artworks, wallWidth }: BackRoomProps) {
       <pointLight position={[-2, 3, 6]} intensity={12} distance={8} decay={2} color="#fff4e0" />
       <pointLight position={[2, 3, 6]} intensity={12} distance={8} decay={2} color="#fff4e0" />
 
-      {artwork && (
+      {/* Keep artwork mounted until the camera has fully panned back to the front wall */}
+      {isBackRoomVisible && artwork && (
         <Suspense fallback={null}>
           <BackWallArtwork artwork={artwork} />
         </Suspense>

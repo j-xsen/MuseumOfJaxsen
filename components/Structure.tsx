@@ -84,7 +84,10 @@ function Structure() {
   );
 }
 
-// Only mount BackRoom once the user has triggered the back-wall view — keeps initial load fast
+// Keep BackRoom mounted once the user has visited — the wall/floor geometry must
+// persist so there's no visible pop when returning from the back-wall view.
+// BackWallArtwork (the hi-res image) is gated inside BackRoom by isBackWallView,
+// so textures are only fetched when the user actually hits Details.
 function LazyBackRoom({ artworks, wallWidth }: { artworks: Data["artworks"]; wallWidth: number }) {
   const isBackWallView = useMuseumStore((s) => s.isBackWallView);
   const [everActivated, setEverActivated] = useState(false);

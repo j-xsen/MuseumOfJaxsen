@@ -9,12 +9,22 @@ const CAMERA_POS = new Vector3(0, 1.3, 4);
 export default function CameraAnimator() {
   const { camera, gl } = useThree();
   const isBackWallView = useMuseumStore((s) => s.isBackWallView);
+  const isBackRoomReady = useMuseumStore((s) => s.isBackRoomReady);
+  const setIsBackRoomVisible = useMuseumStore((s) => s.setIsBackRoomVisible);
   const isBackRef = useRef(isBackWallView);
+  const isReadyRef = useRef(isBackRoomReady);
+  // Tracks whether we've already dispatched the "transition done" hide so we
+  // don't call setIsBackRoomVisible(false) on every frame after the first.
+  const hiddenRef = useRef(true);
 
   useEffect(() => {
     isBackRef.current = isBackWallView;
+    isReadyRef.current = isBackRoomReady;
+    if (isBackWallView) {
+      hiddenRef.current = false; // a new back-wall visit is starting
+    }
     if (!isBackWallView) lookOffset.current = { x: 0, y: 0 };
-  }, [isBackWallView]);
+  }, [isBackWallView, isBackRoomReady]);
 
   // θ = π → looking at gallery (z=0), θ = 0 → looking at back wall (z=8)
   // Sweeping θ from π→0 rotates the view clockwise around Y, avoiding any flip.
@@ -69,9 +79,18 @@ export default function CameraAnimator() {
 
   useFrame((_, delta) => {
     const dt = Math.min(delta, 0.05);
-    const targetTheta = isBackRef.current ? 0 : Math.PI;
+    // Only begin rotating toward the back wall once the artwork texture is loaded.
+    // isReadyRef prevents the camera from sweeping while the GPU is uploading the texture.
+    const targetTheta = (isBackRef.current && isReadyRef.current) ? 0 : Math.PI;
     // Frame-rate independent lerp (≈0.06 per frame at 60 fps)
     theta.current += (targetTheta - theta.current) * (1 - Math.pow(0.94, dt * 60));
+
+    // Once the camera has fully returned to the front wall, hide back-wall content.
+    // 0.05 rad tolerance (~3°) — imperceptible deviation from straight-ahead.
+    if (!isBackRef.current && !hiddenRef.current && Math.abs(theta.current - Math.PI) < 0.05) {
+      hiddenRef.current = true;
+      setIsBackRoomVisible(false);
+    }
 
     // How far into detail view (0 = gallery, 1 = back wall)
     const detailProgress = 1 - theta.current / Math.PI;
