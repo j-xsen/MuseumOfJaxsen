@@ -8,6 +8,7 @@ interface MuseumState {
   // True from the moment the user hits Details until the camera has fully
   // returned to the front wall. BackWallArtwork stays mounted during this window.
   isBackRoomVisible: boolean;
+  isCameraTransitioning: boolean;
   scrollPosition: number;
   setActiveArtworkId: (id: string | null) => void;
   setDetailViewOpen: (open: boolean) => void;
@@ -17,6 +18,7 @@ interface MuseumState {
   setIsBackWallView: (v: boolean) => void;
   setIsBackRoomReady: (v: boolean) => void;
   setIsBackRoomVisible: (v: boolean) => void;
+  setIsCameraTransitioning: (v: boolean) => void;
 }
 
 export const useMuseumStore = create<MuseumState>((set) => ({
@@ -25,6 +27,7 @@ export const useMuseumStore = create<MuseumState>((set) => ({
   isBackWallView: false,
   isBackRoomReady: false,
   isBackRoomVisible: false,
+  isCameraTransitioning: false,
   scrollPosition: 0,
 
   setActiveArtworkId: (id) => set({ activeArtworkId: id }),
@@ -51,4 +54,5 @@ export const useMuseumStore = create<MuseumState>((set) => ({
   ),
   setIsBackRoomReady: (v) => set({ isBackRoomReady: v }),
   setIsBackRoomVisible: (v) => set({ isBackRoomVisible: v }),
+  setIsCameraTransitioning: (v) => set({ isCameraTransitioning: v }),
 }));

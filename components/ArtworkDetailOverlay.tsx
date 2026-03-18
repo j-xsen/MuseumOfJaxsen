@@ -17,8 +17,13 @@ export default function ArtworkDetailOverlay() {
   const activeArtworkId = useMuseumStore((state) => state.activeArtworkId);
   const isBackWallView = useMuseumStore((s) => s.isBackWallView);
   const setIsBackWallView = useMuseumStore((s) => s.setIsBackWallView);
+  const isCameraTransitioning = useMuseumStore((s) => s.isCameraTransitioning);
+  const isBackRoomReady = useMuseumStore((s) => s.isBackRoomReady);
 
-  // Back-wall view: show a simple "back" button and drag hint
+  // Hide all UI while camera is moving, or while waiting for back-room texture to load.
+  if (isCameraTransitioning || (isBackWallView && !isBackRoomReady)) return null;
+
+  // Back-wall view: show a simple "back" button and drag hint.
   if (isBackWallView) {
     return (
       <>

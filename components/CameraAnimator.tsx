@@ -11,11 +11,14 @@ export default function CameraAnimator() {
   const isBackWallView = useMuseumStore((s) => s.isBackWallView);
   const isBackRoomReady = useMuseumStore((s) => s.isBackRoomReady);
   const setIsBackRoomVisible = useMuseumStore((s) => s.setIsBackRoomVisible);
+  const setIsCameraTransitioning = useMuseumStore((s) => s.setIsCameraTransitioning);
   const isBackRef = useRef(isBackWallView);
   const isReadyRef = useRef(isBackRoomReady);
   // Tracks whether we've already dispatched the "transition done" hide so we
   // don't call setIsBackRoomVisible(false) on every frame after the first.
   const hiddenRef = useRef(true);
+  // Tracks last-dispatched transitioning value so we only call the setter on change.
+  const transitioningRef = useRef(false);
 
   useEffect(() => {
     isBackRef.current = isBackWallView;
@@ -90,6 +93,13 @@ export default function CameraAnimator() {
     if (!isBackRef.current && !hiddenRef.current && Math.abs(theta.current - Math.PI) < 0.05) {
       hiddenRef.current = true;
       setIsBackRoomVisible(false);
+    }
+
+    // Broadcast transitioning state — only call setter when value changes.
+    const isTransitioning = Math.abs(theta.current - targetTheta) >= 0.05;
+    if (isTransitioning !== transitioningRef.current) {
+      transitioningRef.current = isTransitioning;
+      setIsCameraTransitioning(isTransitioning);
     }
 
     // How far into detail view (0 = gallery, 1 = back wall)
