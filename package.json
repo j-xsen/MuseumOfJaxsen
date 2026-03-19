@@ -11,6 +11,7 @@
     "@react-three/uikit": "^1.0.64",
     "@stripe/stripe-js": "^8.9.0",
     "@types/three": "^0.183.1",
+    "@vercel/analytics": "^2.0.1",
     "contentful": "^11.10.6",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",

@@ -6,6 +6,7 @@ import Structure from "../components/Structure";
 import { Fullscreen } from "@react-three/uikit";
 import ArtworkDetailOverlay from "../components/ArtworkDetailOverlay";
 import { usePageContext } from "vike-react/usePageContext";
+import { Analytics } from "@vercel/analytics/next"
 
 export default function Layout({ children }: { children: ReactNode }) {
   const { urlPathname } = usePageContext();
@@ -35,6 +36,7 @@ export default function Layout({ children }: { children: ReactNode }) {
       <div style={{ position: "absolute", inset: 0, pointerEvents: "none", zIndex: 1 }}>
         <ArtworkDetailOverlay />
       </div>
+        <Analytics/>
     </div>
   );
 }
