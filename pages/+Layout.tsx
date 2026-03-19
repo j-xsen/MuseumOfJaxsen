@@ -6,7 +6,7 @@ import Structure from "../components/Structure";
 import { Fullscreen } from "@react-three/uikit";
 import ArtworkDetailOverlay from "../components/ArtworkDetailOverlay";
 import { usePageContext } from "vike-react/usePageContext";
-import { Analytics } from "@vercel/analytics/next"
+import { Analytics } from "@vercel/analytics/react"
 
 export default function Layout({ children }: { children: ReactNode }) {
   const { urlPathname } = usePageContext();
