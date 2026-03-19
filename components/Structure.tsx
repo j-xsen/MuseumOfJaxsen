@@ -7,6 +7,7 @@ import Artwork from "./Artwork";
 import ArtworkLabel from "./ArtworkLabel";
 import CameraAnimator from "./CameraAnimator";
 import BackRoom from "./BackRoom";
+import LogoDecal from "./LogoDecal";
 import { useMuseumStore } from "../lib/store";
 import type { Data } from "../pages/index/+data";
 import { Group } from "three";
@@ -63,6 +64,7 @@ function Structure() {
       <Suspense fallback={null}>
         <Wall height={9} width={wallWidth} position={[0, 1, 0]} />
         <Floor height={6} width={wallWidth} position={[0, -1, 0]} />
+        <LogoDecal />
       </Suspense>
 
       <CameraAnimator />
