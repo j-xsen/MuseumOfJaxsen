@@ -5,6 +5,15 @@ import { defineConfig } from "vite";
 export default defineConfig({
   plugins: [vike(), react()],
   build: {
-    chunkSizeWarningLimit: 600,
+    chunkSizeWarningLimit: 2000,
+    rollupOptions: {
+      output: {
+        manualChunks: (id) => {
+          if (id.includes("node_modules/three") || id.includes("node_modules/@react-three")) {
+            return "three";
+          }
+        },
+      },
+    },
   },
 });
