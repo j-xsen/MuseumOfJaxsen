@@ -79,7 +79,7 @@ export default function ArtworkDetailOverlay() {
         backgroundColor: "#faf8f3",
         border: "1px solid #d4cfc7",
         borderRadius: 2,
-        padding: "clamp(14px, 4vw, 28px) clamp(12px, 3.5vw, 24px)",
+        padding: "clamp(10px, 2.5vw, 16px) clamp(12px, 3.5vw, 24px)",
         fontFamily: "system-ui, -apple-system, Georgia, serif",
         boxSizing: "border-box",
       }}
@@ -88,17 +88,17 @@ export default function ArtworkDetailOverlay() {
         {artwork.title}
       </div>
 
-      <div style={{ marginTop: 8, fontSize: "clamp(13px, 3.5vw, 16px)", color: "#5a5650" }}>
+      <div style={{ marginTop: 4, fontSize: "clamp(13px, 3.5vw, 16px)", color: "#5a5650" }}>
         {artwork.artist}
       </div>
 
-      <div style={{ marginTop: 20, marginBottom: 20, height: 1, backgroundColor: "#d4cfc7" }} />
+      <div style={{ marginTop: 10, marginBottom: 10, height: 1, backgroundColor: "#d4cfc7" }} />
 
       <div style={{ fontSize: "clamp(12px, 3vw, 15px)", color: "#7a7670" }}>
         {`${artwork.year} · ${artwork.medium}`}
       </div>
 
-      <div style={{ marginTop: 24, display: "flex", gap: 10 }}>
+      <div style={{ marginTop: 12, display: "flex", gap: 10 }}>
         <button
           onClick={artwork.available ? () => createCheckoutSession(artwork) : undefined}
           style={{
@@ -111,9 +111,10 @@ export default function ArtworkDetailOverlay() {
             fontWeight: "bold",
             color: artwork.available ? "#1a1814" : "#c0bbb5",
             cursor: artwork.available ? "pointer" : "default",
+            whiteSpace: "nowrap",
           }}
         >
-          {artwork.available ? `Acquire — $${artwork.price}` : "Not Available"}
+          {artwork.available ? `Order a Print — $${artwork.price}` : "Not Available"}
         </button>
 
         <button
@@ -127,7 +128,7 @@ export default function ArtworkDetailOverlay() {
             color: "#7a7670",
           }}
         >
-          Details
+          View Large
         </button>
       </div>
     </div>

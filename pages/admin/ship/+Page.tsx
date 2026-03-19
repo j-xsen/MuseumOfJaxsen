@@ -1,5 +1,3 @@
-"use client";
-
 import { useState } from "react";
 
 const CARRIERS = ["USPS", "UPS", "FedEx", "DHL", "Other"];

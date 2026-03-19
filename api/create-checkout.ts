@@ -35,9 +35,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
               price_data: {
                 currency: "usd",
                 product_data: {
-                  name: artworkTitle,
+                  name: `${artworkTitle} 8.5"x11" Print`,
                   images: imageUrl ? [imageUrl] : [],
-                  description: `Original artwork by Jaxsen Honeycutt`,
+                  description: `Art print on 8.5"×11" Glossy Photo Paper. Image fills the full sheet (may be cropped to fit). Ships via USPS.`,
                 },
                 unit_amount: Math.round(price * 100), // Convert to cents
               },
