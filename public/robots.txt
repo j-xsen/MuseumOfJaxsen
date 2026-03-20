@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+# Admin pages are not for public indexing
+Disallow: /admin/
+
+Sitemap: https://museum.jaxsenville.com/api/sitemap.xml

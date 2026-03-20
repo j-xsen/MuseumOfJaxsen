@@ -1,8 +1,25 @@
 // https://vike.dev/Head
 
 export function Head() {
+  const title = "Museum of Jaxsen";
+  const description =
+    "Museum of Jaxsen — the museum of Jaxsenville. An immersive gallery of original works by artist Jaxsen Honeycutt. Explore the collection and purchase fine art prints.";
+
   return (
     <>
+      <meta name="description" content={description} />
+
+      {/* Open Graph */}
+      <meta property="og:title" content={title} />
+      <meta property="og:description" content={description} />
+      <meta property="og:type" content="website" />
+
+      {/* Twitter Card */}
+      <meta name="twitter:card" content="summary" />
+      <meta name="twitter:title" content={title} />
+      <meta name="twitter:description" content={description} />
+
+      {/* Favicons */}
       <link rel="icon" type="image/x-icon" href="/favicon.ico" />
       <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
       <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
