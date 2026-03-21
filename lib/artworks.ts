@@ -1,13 +1,13 @@
 // Re-export types and functions from contentful module
-export type { Artwork } from "./contentful";
+export type { Artwork } from "./contentful.js";
 export {
   fetchArtworks,
   fetchArtworkBySlug as getArtworkBySlug,
   fetchArtworkById as getArtworkById,
-} from "./contentful";
+} from "./contentful.js";
 
 // Keep static data as fallback for development
-import type { Artwork } from "./contentful";
+import type { Artwork } from "./contentful.js";
 
 export const FALLBACK_ARTWORKS: Artwork[] = [
   {
