@@ -1,8 +1,8 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { fetchArtworks } from "../lib/artworks";
+import { fetchArtworks } from "../lib/artworks.js";
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  const base = process.env.NEXT_PUBLIC_APP_URL || "https://YOUR_DOMAIN";
+  const base = process.env.NEXT_PUBLIC_APP_URL || "https://museum.jaxsenville.com/";
 
   const artworks = await fetchArtworks();
 

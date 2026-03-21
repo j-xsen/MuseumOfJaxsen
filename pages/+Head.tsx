@@ -3,7 +3,7 @@
 export function Head() {
   const title = "Museum of Jaxsen";
   const description =
-    "Museum of Jaxsen — the museum of Jaxsenville. An immersive gallery of original works by artist Jaxsen Honeycutt. Explore the collection and purchase fine art prints.";
+    "3D museum of artworks by Jaxsen Honeycutt and the opportunity to purchase physical prints of the artworks!";
 
   return (
     <>
