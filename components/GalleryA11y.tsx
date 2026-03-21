@@ -5,7 +5,7 @@ import type { Data } from "../pages/index/+data";
 
 export default function GalleryA11y() {
   const data = useData<Data | { artworks?: unknown }>();
-  const artworks = "artworks" in data && Array.isArray((data as Data).artworks)
+  const artworks = data != null && "artworks" in data && Array.isArray((data as Data).artworks)
     ? (data as Data).artworks
     : [];
 
