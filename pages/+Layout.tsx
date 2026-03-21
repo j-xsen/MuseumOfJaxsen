@@ -11,7 +11,7 @@ import { Analytics } from "@vercel/analytics/react"
 export default function Layout({ children }: { children: ReactNode }) {
   const { urlPathname } = usePageContext();
 
-  if (urlPathname.startsWith("/purchase/success") || urlPathname.startsWith("/admin")) {
+  if (urlPathname.startsWith("/purchase/success") || urlPathname.startsWith("/admin") || urlPathname.startsWith("/artwork/")) {
     return <>{children}</>;
   }
 
