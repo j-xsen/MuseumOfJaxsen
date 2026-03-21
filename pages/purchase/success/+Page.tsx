@@ -14,10 +14,10 @@ export default function Page() {
         textAlign: "center",
       }}>
         <p style={{
-          fontSize: "0.75rem",
+          fontSize: "0.875rem",
           letterSpacing: "0.2em",
           textTransform: "uppercase",
-          color: "#7a7060",
+          color: "#9d9180",
           marginBottom: "2rem",
         }}>
           Museum of Jaxsen
@@ -61,7 +61,7 @@ export default function Page() {
         <a
           href="/"
           style={{
-            fontSize: "0.8rem",
+            fontSize: "0.875rem",
             letterSpacing: "0.15em",
             textTransform: "uppercase",
             color: "#c8b99a",
