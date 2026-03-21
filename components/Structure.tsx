@@ -134,6 +134,19 @@ function GalleryController({ artworks, spacing, children }: GalleryControllerPro
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Respond to artwork navigation triggered externally (e.g. keyboard focus from GalleryA11y).
+  // If activeArtworkId in the store differs from what this controller last set, snap to it.
+  const activeArtworkId = useMuseumStore((s) => s.activeArtworkId);
+  useEffect(() => {
+    if (!activeArtworkId || activeArtworkId === activeIdRef.current) return;
+    const index = artworks.findIndex((a) => a.id === activeArtworkId);
+    if (index !== -1) {
+      targetIndex.current = index;
+      rawAccum.current = 0;
+      activeIdRef.current = activeArtworkId;
+    }
+  }, [activeArtworkId]); // eslint-disable-line react-hooks/exhaustive-deps
+
   useEffect(() => {
     const el = gl.domElement;
 
@@ -160,14 +173,27 @@ function GalleryController({ artworks, spacing, children }: GalleryControllerPro
       lastScrollTime.current = Date.now();
     };
 
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (isBackRef.current) return;
+      if (e.key === "ArrowLeft") {
+        targetIndex.current = Math.max(0, targetIndex.current - 1);
+        rawAccum.current = 0;
+      } else if (e.key === "ArrowRight") {
+        targetIndex.current = Math.min(artworks.length - 1, targetIndex.current + 1);
+        rawAccum.current = 0;
+      }
+    };
+
     el.addEventListener("wheel", onWheel, { passive: false });
     el.addEventListener("touchstart", onTouchStart, { passive: true });
     el.addEventListener("touchmove", onTouchMove, { passive: true });
+    window.addEventListener("keydown", onKeyDown);
 
     return () => {
       el.removeEventListener("wheel", onWheel);
       el.removeEventListener("touchstart", onTouchStart);
       el.removeEventListener("touchmove", onTouchMove);
+      window.removeEventListener("keydown", onKeyDown);
     };
   }, [gl]);
 

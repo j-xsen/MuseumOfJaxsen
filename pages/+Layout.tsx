@@ -5,6 +5,7 @@ import { Canvas } from "@react-three/fiber";
 import Structure from "../components/Structure";
 import { Fullscreen } from "@react-three/uikit";
 import ArtworkDetailOverlay from "../components/ArtworkDetailOverlay";
+import GalleryA11y from "../components/GalleryA11y";
 import { usePageContext } from "vike-react/usePageContext";
 import { Analytics } from "@vercel/analytics/react"
 
@@ -17,6 +18,8 @@ export default function Layout({ children }: { children: ReactNode }) {
 
   return (
     <div
+      role="region"
+      aria-label="Art gallery — use arrow keys or scroll to browse artworks"
       style={{
         position: "fixed",
         inset: 0,
@@ -33,10 +36,11 @@ export default function Layout({ children }: { children: ReactNode }) {
         <Structure />
         <Fullscreen>{children}</Fullscreen>
       </Canvas>
+      <GalleryA11y />
       <div style={{ position: "absolute", inset: 0, pointerEvents: "none", zIndex: 1 }}>
         <ArtworkDetailOverlay />
       </div>
-        <Analytics/>
+      <Analytics/>
     </div>
   );
 }
