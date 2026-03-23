@@ -40,8 +40,6 @@ export default function GalleryA11y() {
       return;
     }
 
-    // Track the new artwork view
-    track("artwork_viewed", { title: artwork.title, artist: artwork.artist });
     dwellRef.current = { id: artwork.id, title: artwork.title, startedAt: Date.now() };
 
     if (clearTimer.current) clearTimeout(clearTimer.current);
