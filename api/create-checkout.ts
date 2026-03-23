@@ -48,6 +48,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       cancel_url: `${origin}/`,
       metadata: {
         artworkId,
+        artworkTitle,
       },
       shipping_address_collection: {
         allowed_countries: ["US", "CA", "GB", "AU"],

@@ -1,9 +1,16 @@
 import { useEffect } from "react";
+import { useData } from "vike-react/useData";
 import { track } from "../../../lib/analytics";
+import type { Data } from "./+data";
 
 export default function Page() {
+  const { revenue, artworkTitle } = useData<Data>();
+
   useEffect(() => {
-    track("purchase_complete");
+    const props: Record<string, string | number | boolean> = {};
+    if (artworkTitle) props.title = artworkTitle;
+    if (revenue !== null) props.revenue = revenue;
+    track("purchase_complete", props);
   }, []);
   return (
     <main style={{
