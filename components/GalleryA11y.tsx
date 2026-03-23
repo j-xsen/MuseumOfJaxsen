@@ -27,10 +27,10 @@ export default function GalleryA11y() {
   useEffect(() => {
     const artwork = artworks.find((a) => a.id === activeArtworkId);
 
-    // Track dwell time for the previous artwork (min 1s to filter accidental scrolls)
+    // Track dwell time for the previous artwork (min 2s to filter accidental scrolls)
     if (dwellRef.current) {
       const ms = Date.now() - dwellRef.current.startedAt;
-      if (ms >= 1000) {
+      if (ms >= 2000) {
         track("artwork_dwell", { title: dwellRef.current.title, seconds: Math.round(ms / 1000) });
       }
     }
@@ -40,6 +40,7 @@ export default function GalleryA11y() {
       return;
     }
 
+    track("artwork_viewed", { title: artwork.title, artist: artwork.artist });
     dwellRef.current = { id: artwork.id, title: artwork.title, startedAt: Date.now() };
 
     if (clearTimer.current) clearTimeout(clearTimer.current);
