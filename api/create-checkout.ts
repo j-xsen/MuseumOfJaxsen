@@ -20,11 +20,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     const origin = process.env.NEXT_PUBLIC_APP_URL || req.headers.origin || "http://localhost:3000";
 
-    const country = req.headers['x-vercel-ip-country'];
-    const shippingRate = country === 'US'
-      ? process.env.STRIPE_SHIPPING_RATE_US!
-      : process.env.STRIPE_SHIPPING_RATE_INTL!;
-
     // Create Stripe checkout session
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
@@ -57,7 +52,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       shipping_address_collection: {
         allowed_countries: ["US", "CA", "GB", "AU"],
       },
-      shipping_options: [{ shipping_rate: shippingRate }],
+      shipping_options: [
+        { shipping_rate: process.env.STRIPE_SHIPPING_RATE_US! },
+        { shipping_rate: process.env.STRIPE_SHIPPING_RATE_INTL! },
+      ],
     });
 
     return res.status(200).json({ url: session.url });

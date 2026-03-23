@@ -2,7 +2,7 @@ import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { fetchArtworks } from "../lib/artworks.js";
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  const base = process.env.NEXT_PUBLIC_APP_URL || "https://museum.jaxsenville.com/";
+  const base = (process.env.NEXT_PUBLIC_APP_URL || "https://museum.jaxsenville.com").replace(/\/$/, "");
 
   const artworks = await fetchArtworks();
 
