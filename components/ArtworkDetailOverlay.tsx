@@ -1,6 +1,7 @@
 import { useData } from "vike-react/useData";
 import { useMuseumStore } from "../lib/store";
 import { createCheckoutSession } from "../lib/stripe";
+import { track } from "../lib/analytics";
 import type { Data } from "../pages/index/+data";
 
 const BTN_BASE: React.CSSProperties = {
@@ -138,7 +139,7 @@ export default function ArtworkDetailOverlay() {
         <button
           type="button"
           aria-label={`View ${artwork.title} full size`}
-          onClick={() => setIsBackWallView(true)}
+          onClick={() => { track("view_large", { title: artwork.title }); setIsBackWallView(true); }}
           style={{
             ...BTN_BASE,
             padding: "clamp(9px, 2.5vw, 14px) clamp(10px, 2.5vw, 16px)",

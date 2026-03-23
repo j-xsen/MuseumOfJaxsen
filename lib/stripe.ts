@@ -1,6 +1,8 @@
 import type { Artwork } from "./contentful";
+import { track } from "./analytics";
 
 export async function createCheckoutSession(artwork: Artwork) {
+  track("checkout_initiated", { title: artwork.title, price: artwork.price });
   try {
     const apiBase = import.meta.env.DEV ? "http://localhost:3001" : "";
     const response = await fetch(`${apiBase}/api/create-checkout`, {

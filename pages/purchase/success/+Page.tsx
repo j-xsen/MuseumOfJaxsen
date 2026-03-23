@@ -1,4 +1,10 @@
+import { useEffect } from "react";
+import { track } from "../../../lib/analytics";
+
 export default function Page() {
+  useEffect(() => {
+    track("purchase_complete");
+  }, []);
   return (
     <main style={{
       minHeight: "100vh",

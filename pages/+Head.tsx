@@ -25,6 +25,9 @@ export function Head() {
       <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
       <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
       <link rel="manifest" href="/site.webmanifest" />
+
+      {/* Umami Analytics */}
+      <script defer src="https://umami-psi-inky.vercel.app/script.js" data-website-id="57dfafa4-9794-4eef-b0c2-9cde909e712c"></script>
     </>
   );
 }

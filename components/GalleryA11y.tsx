@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useData } from "vike-react/useData";
 import { useMuseumStore } from "../lib/store";
+import { track } from "../lib/analytics";
 import type { Data } from "../pages/index/+data";
 
 export default function GalleryA11y() {
@@ -20,9 +21,29 @@ export default function GalleryA11y() {
   const [announcement, setAnnouncement] = useState("");
   const clearTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // Dwell time tracking
+  const dwellRef = useRef<{ id: string; title: string; startedAt: number } | null>(null);
+
   useEffect(() => {
     const artwork = artworks.find((a) => a.id === activeArtworkId);
-    if (!artwork) return;
+
+    // Track dwell time for the previous artwork (min 2s to filter accidental scrolls)
+    if (dwellRef.current) {
+      const seconds = Math.round((Date.now() - dwellRef.current.startedAt) / 1000);
+      if (seconds >= 2) {
+        track("artwork_dwell", { title: dwellRef.current.title, seconds });
+      }
+    }
+
+    if (!artwork) {
+      dwellRef.current = null;
+      return;
+    }
+
+    // Track the new artwork view
+    track("artwork_viewed", { title: artwork.title, artist: artwork.artist });
+    dwellRef.current = { id: artwork.id, title: artwork.title, startedAt: Date.now() };
+
     if (clearTimer.current) clearTimeout(clearTimer.current);
     setAnnouncement(
       `${artwork.title} by ${artwork.artist}, ${artwork.year}. ` +
