@@ -27,11 +27,11 @@ export default function GalleryA11y() {
   useEffect(() => {
     const artwork = artworks.find((a) => a.id === activeArtworkId);
 
-    // Track dwell time for the previous artwork (min 2s to filter accidental scrolls)
+    // Track dwell time for the previous artwork (min 1s to filter accidental scrolls)
     if (dwellRef.current) {
-      const seconds = Math.round((Date.now() - dwellRef.current.startedAt) / 1000);
-      if (seconds >= 2) {
-        track("artwork_dwell", { title: dwellRef.current.title, seconds });
+      const ms = Date.now() - dwellRef.current.startedAt;
+      if (ms >= 1000) {
+        track("artwork_dwell", { title: dwellRef.current.title, seconds: Math.round(ms / 1000) });
       }
     }
 
