@@ -1,19 +1,25 @@
 import { useData } from "vike-react/useData";
 import type { Data } from "./+data";
 
+const BASE_URL = "https://museum.jaxsenville.com";
+
 export default function Head() {
   const { artwork } = useData<Data>();
+  const url = `${BASE_URL}/artwork/${artwork.slug}`;
 
   return (
     <>
       <title>{`${artwork.title} - Museum of Jaxsen`}</title>
       <meta name="description" content={artwork.description} />
+      <meta name="author" content={artwork.artist} />
 
       {/* Open Graph */}
       <meta property="og:title" content={`${artwork.title} by ${artwork.artist}`} />
       <meta property="og:description" content={artwork.description} />
       <meta property="og:image" content={artwork.imageUrl} />
       <meta property="og:type" content="website" />
+      <meta property="og:url" content={url} />
+      <meta property="og:site_name" content="Museum of Jaxsen" />
 
       {/* Twitter Card */}
       <meta name="twitter:card" content="summary_large_image" />
@@ -27,6 +33,7 @@ export default function Head() {
           "@context": "https://schema.org",
           "@type": "VisualArtwork",
           name: artwork.title,
+          url,
           creator: {
             "@type": "Person",
             name: artwork.artist,
@@ -35,6 +42,7 @@ export default function Head() {
           artMedium: artwork.medium,
           description: artwork.description,
           image: artwork.imageUrl,
+          width: artwork.dimensions,
           offers: {
             "@type": "Offer",
             price: artwork.price,

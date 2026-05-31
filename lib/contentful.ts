@@ -26,6 +26,7 @@ export interface Artwork {
   title: string;
   artist: string;
   year: number;
+  date: string; // ISO date string YYYY-MM
   description: string;
   imageUrl: string;       // sized front-wall texture (w=1600)
   imageUrlHiRez?: string; // full-res back-wall texture (separate hiRez asset)
@@ -51,9 +52,10 @@ export const contentfulClient = createClient({
 export function transformArtwork(entry: Entry<ContentfulArtworkSkeleton>): Artwork {
   const fields = entry.fields;
 
-  // Parse year from date field
+  // Parse date field
   const date = new Date(fields.date as string);
   const year = date.getFullYear();
+  const dateStr = date.toISOString().slice(0, 7);
 
   const title = fields.title as string;
 
@@ -84,6 +86,7 @@ export function transformArtwork(entry: Entry<ContentfulArtworkSkeleton>): Artwo
     title: title,
     artist: "Jaxsen Honeycutt", // Default artist
     year,
+    date: dateStr,
     description: fields.description as string || `${fields.title} - Created ${year}. Medium: ${fields.media || "Mixed Media"}`,
     imageUrl,
     imageUrlHiRez,

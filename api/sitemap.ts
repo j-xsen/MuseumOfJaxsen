@@ -6,12 +6,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   const artworks = await fetchArtworks();
 
+  const today = new Date().toISOString().split("T")[0];
+
   const urls = [
-    { loc: base, priority: "1.0", changefreq: "weekly" },
+    { loc: base, priority: "1.0", changefreq: "weekly", lastmod: today },
     ...artworks.map((a) => ({
       loc: `${base}/artwork/${a.slug}`,
       priority: "0.8",
       changefreq: "monthly",
+      lastmod: a.date,
     })),
   ];
 
@@ -21,6 +24,7 @@ ${urls
   .map(
     (u) => `  <url>
     <loc>${u.loc}</loc>
+    <lastmod>${u.lastmod}</lastmod>
     <changefreq>${u.changefreq}</changefreq>
     <priority>${u.priority}</priority>
   </url>`
