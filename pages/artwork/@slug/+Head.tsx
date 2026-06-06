@@ -7,16 +7,19 @@ export default function Head() {
   const { artwork } = useData<Data>();
   const url = `${BASE_URL}/artwork/${artwork.slug}`;
 
+  const ogImage = `${artwork.imageUrl}?w=1200&h=630&fit=fill&f=center`;
+
   return (
     <>
       <title>{`${artwork.title} - Museum of Jaxsen`}</title>
+      <link rel="canonical" href={url} />
       <meta name="description" content={artwork.description} />
       <meta name="author" content={artwork.artist} />
 
       {/* Open Graph */}
       <meta property="og:title" content={`${artwork.title} by ${artwork.artist}`} />
       <meta property="og:description" content={artwork.description} />
-      <meta property="og:image" content={artwork.imageUrl} />
+      <meta property="og:image" content={ogImage} />
       <meta property="og:type" content="website" />
       <meta property="og:url" content={url} />
       <meta property="og:site_name" content="Museum of Jaxsen" />
@@ -25,7 +28,7 @@ export default function Head() {
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={`${artwork.title} by ${artwork.artist}`} />
       <meta name="twitter:description" content={artwork.description} />
-      <meta name="twitter:image" content={artwork.imageUrl} />
+      <meta name="twitter:image" content={ogImage} />
 
       {/* JSON-LD Structured Data */}
       <script type="application/ld+json">

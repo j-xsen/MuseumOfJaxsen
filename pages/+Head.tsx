@@ -10,6 +10,8 @@ export function Head() {
 
   return (
     <>
+      <title>{title}</title>
+      <link rel="canonical" href={BASE_URL} />
       <meta name="description" content={description} />
       <meta name="author" content="Jaxsen Honeycutt" />
 
