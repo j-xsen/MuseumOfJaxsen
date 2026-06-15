@@ -6,7 +6,7 @@ export function Head() {
   const title = "Museum of Jaxsen";
   const description =
     "3D museum of artworks by Jaxsen Honeycutt and the opportunity to purchase physical prints of the artworks!";
-  const image = `${BASE_URL}/android-chrome-512x512.png`;
+  const image = `${BASE_URL}/og-image.jpg`;
 
   return (
     <>
@@ -22,12 +22,18 @@ export function Head() {
       <meta property="og:url" content={BASE_URL} />
       <meta property="og:site_name" content={title} />
       <meta property="og:image" content={image} />
+      <meta property="og:image:type" content="image/jpeg" />
+      <meta property="og:image:width" content="1200" />
+      <meta property="og:image:height" content="630" />
+      <meta property="og:image:alt" content="Museum of Jaxsen — 3D art gallery" />
+      <meta property="og:locale" content="en_US" />
 
       {/* Twitter Card */}
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={title} />
       <meta name="twitter:description" content={description} />
       <meta name="twitter:image" content={image} />
+      <meta name="twitter:image:alt" content="Museum of Jaxsen — 3D art gallery" />
 
       {/* JSON-LD */}
       <script type="application/ld+json">
@@ -47,6 +53,7 @@ export function Head() {
       <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
       <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
       <link rel="manifest" href="/site.webmanifest" />
+      <meta name="theme-color" content="#000000" />
 
       {/* Umami Analytics */}
       <script defer src="https://umami-psi-inky.vercel.app/script.js" data-website-id="57dfafa4-9794-4eef-b0c2-9cde909e712c"></script>
